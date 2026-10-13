@@ -1,0 +1,143 @@
+<ion-header class="ion-no-border modal-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()" fill="clear" color="medium" aria-label="Cancelar">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="modal-title">
+      {{ mode === 'edit' ? 'Modificar Tarea' : 'Nueva Tarea' }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="taskForm.invalid" color="primary" class="save-toolbar-btn">
+        Guardar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content ion-padding">
+  <form [formGroup]="taskForm" (ngSubmit)="save()" class="task-form">
+    <!-- Título de la tarea -->
+    <div class="form-group">
+      <label class="input-label" for="task-title">
+        <ion-icon name="document-text-outline" class="label-icon"></ion-icon>
+        Título de la tarea <span class="required">*</span>
+      </label>
+      <div class="custom-input-wrapper" [class.has-error]="taskForm.get('title')?.touched && taskForm.get('title')?.invalid">
+        <ion-input
+          id="task-title"
+          formControlName="title"
+          placeholder="Ej. Revisar informe mensual..."
+          [clearInput]="true"
+          class="dark-input"
+        ></ion-input>
+      </div>
+      @if (taskForm.get('title')?.touched && taskForm.get('title')?.errors?.['required']) {
+        <ion-note color="danger" class="error-note">El título es obligatorio.</ion-note>
+      }
+      @if (taskForm.get('title')?.touched && taskForm.get('title')?.errors?.['minlength']) {
+        <ion-note color="danger" class="error-note">Debe tener al menos 3 caracteres.</ion-note>
+      }
+    </div>
+
+    <!-- Descripción opcional -->
+    <div class="form-group">
+      <label class="input-label" for="task-desc">
+        <ion-icon name="document-text-outline" class="label-icon"></ion-icon>
+        Descripción (opcional)
+      </label>
+      <div class="custom-input-wrapper">
+        <ion-textarea
+          id="task-desc"
+          formControlName="description"
+          placeholder="Detalles adicionales, recordatorios o notas..."
+          [autoGrow]="true"
+          rows="3"
+          class="dark-textarea"
+        ></ion-textarea>
+      </div>
+    </div>
+
+    <!-- Categoría -->
+    <div class="form-group">
+      <label class="input-label">
+        <ion-icon name="pricetag-outline" class="label-icon"></ion-icon>
+        Categoría
+      </label>
+      <div class="category-grid">
+        @for (cat of categories; track cat.name) {
+          <button
+            type="button"
+            class="category-chip-btn"
+            [class.active]="taskForm.get('category')?.value === cat.name"
+            [style.--cat-color]="cat.color"
+            (click)="selectCategory(cat.name)"
+          >
+            <ion-icon [name]="cat.icon" class="chip-icon"></ion-icon>
+            <span class="chip-label">{{ cat.name }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Prioridad -->
+    <div class="form-group">
+      <label class="input-label">
+        <ion-icon name="flag-outline" class="label-icon"></ion-icon>
+        Prioridad
+      </label>
+      <div class="priority-selector">
+        @for (prio of priorities; track prio.value) {
+          <button
+            type="button"
+            class="priority-card-btn"
+            [class.active]="taskForm.get('priority')?.value === prio.value"
+            [class.prio-alta]="prio.value === 'alta'"
+            [class.prio-media]="prio.value === 'media'"
+            [class.prio-baja]="prio.value === 'baja'"
+            (click)="selectPriority(prio.value)"
+          >
+            <span class="dot"></span>
+            <div class="prio-text">
+              <span class="prio-title">{{ prio.label }}</span>
+              <span class="prio-desc">{{ prio.desc }}</span>
+            </div>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Fecha límite -->
+    <div class="form-group">
+      <label class="input-label" for="task-due-date">
+        <ion-icon name="calendar-outline" class="label-icon"></ion-icon>
+        Fecha límite
+      </label>
+      <div class="custom-input-wrapper">
+        <ion-input
+          id="task-due-date"
+          type="date"
+          formControlName="dueDate"
+          class="dark-input date-input"
+        ></ion-input>
+      </div>
+    </div>
+
+    <!-- Acciones Inferiores -->
+    <div class="modal-footer-actions">
+      <ion-button (click)="cancel()" fill="outline" color="medium" class="btn-cancel" expand="block">
+        Cancelar
+      </ion-button>
+      <ion-button
+        type="submit"
+        [disabled]="taskForm.invalid"
+        class="btn-submit"
+        expand="block"
+      >
+        <ion-icon slot="start" [name]="mode === 'edit' ? 'save-outline' : 'save-outline'"></ion-icon>
+        {{ mode === 'edit' ? 'Guardar Cambios' : 'Crear Tarea' }}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

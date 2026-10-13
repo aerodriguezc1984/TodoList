@@ -1,0 +1,71 @@
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* Forzar Dark Mode siempre con la paleta oscura de Ionic */
+@import "@ionic/angular/css/palettes/dark.always.css";
+
+/* Custom Theme variables */
+@import "./theme/variables.scss";
+
+/* Global overrides for modern dark UI */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #0b0f17;
+  color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Modals custom styling */
+ion-modal {
+  --background: #111827;
+  --border-radius: 20px 20px 0 0;
+  
+  @media (min-width: 768px) {
+    --border-radius: 20px;
+    --max-width: 520px;
+    --max-height: 85vh;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f17;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Toast high contrast alert styling */
+.custom-toast {
+  --background: #1e293b;
+  --color: #f8fafc;
+  --border-radius: 12px;
+  --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --button-color: #818cf8;
+  font-weight: 600;
+}

@@ -1,0 +1,88 @@
+<ion-header class="ion-no-border detail-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()" fill="clear" color="medium" aria-label="Cerrar">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="detail-title">Detalle de la Tarea</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editTask()" fill="clear" color="primary">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="detail-content ion-padding">
+  <div class="task-detail-card">
+    <!-- Status header -->
+    <div class="status-banner" [class.completed]="task.completed">
+      <ion-icon [name]="task.completed ? 'checkmark-circle' : 'ellipse-outline'" class="status-icon"></ion-icon>
+      <span class="status-text">{{ task.completed ? 'Tarea Completada' : 'Tarea Pendiente' }}</span>
+      <ion-button (click)="toggleComplete()" size="small" fill="solid" [class.btn-reopen]="task.completed" [class.btn-done]="!task.completed" class="quick-status-btn">
+        {{ task.completed ? 'Reabrir' : 'Completar' }}
+      </ion-button>
+    </div>
+
+    <!-- Title & Badges -->
+    <h2 class="task-title" [class.title-done]="task.completed">{{ task.title }}</h2>
+
+    <div class="badges-row">
+      <!-- Category Badge -->
+      <span class="meta-badge category-badge" [style.--cat-color]="getCategoryColor(task.category)">
+        <ion-icon name="pricetag-outline"></ion-icon>
+        {{ task.category }}
+      </span>
+
+      <!-- Priority Badge -->
+      <span class="meta-badge priority-badge" [style.--prio-color]="getPriorityColor(task.priority)">
+        <ion-icon name="flag-outline"></ion-icon>
+        Prioridad {{ task.priority | uppercase }}
+      </span>
+    </div>
+
+    <!-- Description -->
+    <div class="section-box description-box">
+      <span class="section-label">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Descripción
+      </span>
+      <p class="description-text">
+        {{ task.description ? task.description : 'Sin descripción adicional para esta tarea.' }}
+      </p>
+    </div>
+
+    <!-- Dates / Timestamps -->
+    <div class="dates-grid">
+      <div class="date-item">
+        <ion-icon name="calendar-outline" class="date-icon"></ion-icon>
+        <div class="date-info">
+          <span class="date-label">Fecha Límite</span>
+          <span class="date-val">{{ formatDate(task.dueDate) }}</span>
+        </div>
+      </div>
+
+      <div class="date-item">
+        <ion-icon name="time-outline" class="date-icon"></ion-icon>
+        <div class="date-info">
+          <span class="date-label">Creada el</span>
+          <span class="date-val">{{ formatDateTime(task.createdAt) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="detail-actions">
+      <ion-button (click)="editTask()" expand="block" class="btn-edit">
+        <ion-icon slot="start" name="create-outline"></ion-icon>
+        Modificar Tarea
+      </ion-button>
+
+      <ion-button (click)="deleteTask()" fill="outline" color="danger" expand="block" class="btn-delete">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Eliminar Tarea
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
