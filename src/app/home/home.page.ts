@@ -46,10 +46,13 @@ import {
   listOutline,
   checkmarkDoneOutline,
   timeOutline,
-  alertCircleOutline
+  alertCircleOutline,
+  logOutOutline
 } from 'ionicons/icons';
+import { Router } from '@angular/router';
 import { Task, TaskCategory, TaskPriority, TaskSortOption, TaskStatusFilter } from '../models/task.model';
 import { TaskService } from '../services/task.service';
+import { AuthService } from '../services/auth.service';
 import { TaskModalComponent } from '../components/task-modal/task-modal.component';
 import { TaskDetailModalComponent } from '../components/task-detail-modal/task-detail-modal.component';
 
@@ -76,6 +79,8 @@ import { TaskDetailModalComponent } from '../components/task-detail-modal/task-d
 })
 export class HomePage {
   readonly taskService = inject(TaskService);
+  readonly authService = inject(AuthService);
+  private router = inject(Router);
   private modalCtrl = inject(ModalController);
   private alertCtrl = inject(AlertController);
   private toastCtrl = inject(ToastController);
@@ -193,8 +198,44 @@ export class HomePage {
       listOutline,
       checkmarkDoneOutline,
       timeOutline,
-      alertCircleOutline
+      alertCircleOutline,
+      logOutOutline
     });
+  }
+
+  getUserInitials(): string {
+    const user = this.authService.currentUser();
+    if (!user || !user.name) return 'U';
+    const parts = user.name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return user.name.substring(0, 2).toUpperCase();
+  }
+
+  async confirmLogout() {
+    const user = this.authService.currentUser();
+    const alert = await this.alertCtrl.create({
+      header: 'Cerrar Sesión',
+      message: `¿Estás seguro de que deseas salir de la cuenta de <strong>${user?.name || 'tu usuario'}</strong>?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Salir',
+          role: 'destructive',
+          handler: () => {
+            this.authService.logout();
+            this.showToast('Sesión finalizada. ¡Hasta pronto!', 'medium');
+            this.router.navigate(['/login'], { replaceUrl: true });
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   // --- CRUD: CREAR (AGREGAR) ---

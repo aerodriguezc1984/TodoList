@@ -1,5 +1,6 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { Task, TaskCategory, TaskPriority } from '../models/task.model';
+import { AuthService } from './auth.service';
 
 const STORAGE_KEY = 'taskflow_app_tasks_v1';
 
@@ -61,6 +62,8 @@ export class TaskService {
     }
   ];
 
+  private authService = inject(AuthService);
+
   // Signal principal que almacena la lista de tareas
   private tasksSignal = signal<Task[]>(this.loadFromStorage());
 
@@ -78,15 +81,37 @@ export class TaskService {
     return Math.round((this.completedCount() / total) * 100);
   });
 
-  constructor() {}
+  constructor() {
+    effect(() => {
+      // Recargar tareas automáticamente cuando cambie el usuario autenticado
+      const user = this.authService.currentUser();
+      this.tasksSignal.set(this.loadFromStorage());
+    });
+  }
+
+  private getStorageKey(): string {
+    const user = this.authService.currentUser();
+    return user ? `taskflow_tasks_${user.id}` : STORAGE_KEY;
+  }
 
   private loadFromStorage(): Task[] {
     try {
-      const data = localStorage.getItem(STORAGE_KEY);
+      const key = this.getStorageKey();
+      const data = localStorage.getItem(key);
       if (data) {
         const parsed = JSON.parse(data);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
           return parsed;
+        }
+      }
+
+      // Si es el usuario Andrés o demo, migrar datos legacy si existen
+      const legacyData = localStorage.getItem(STORAGE_KEY);
+      if (legacyData) {
+        const legacyParsed = JSON.parse(legacyData);
+        if (Array.isArray(legacyParsed) && legacyParsed.length > 0) {
+          this.saveToStorage(legacyParsed);
+          return legacyParsed;
         }
       }
     } catch (e) {
@@ -99,7 +124,8 @@ export class TaskService {
 
   private saveToStorage(tasks: Task[]): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      const key = this.getStorageKey();
+      localStorage.setItem(key, JSON.stringify(tasks));
     } catch (e) {
       console.error('Error al guardar tareas en LocalStorage:', e);
     }

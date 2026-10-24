@@ -20,6 +20,14 @@
       <ion-button (click)="resetDemoData()" class="toolbar-icon-btn" title="Restablecer tareas">
         <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
       </ion-button>
+
+      <!-- Botón de Usuario / Cerrar Sesión -->
+      <ion-button (click)="confirmLogout()" class="toolbar-user-btn" title="Cerrar sesión">
+        <div class="user-chip-mini">
+          <span class="user-initials">{{ getUserInitials() }}</span>
+        </div>
+        <ion-icon slot="icon-only" name="log-out-outline" class="logout-icon-mini"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -31,7 +39,13 @@
       <div class="progress-card">
         <div class="progress-header">
           <div>
-            <span class="progress-subtitle">Resumen de Actividad</span>
+            <span class="progress-subtitle">
+              @if (authService.currentUser()?.name) {
+                ¡Hola, {{ authService.currentUser()?.name }}! 👋
+              } @else {
+                Resumen de Actividad
+              }
+            </span>
             <h2 class="progress-title">
               @if (taskService.pendingCount() === 0 && taskService.totalCount() > 0) {
                 ¡Todo listo por hoy! 🚀

@@ -1,0 +1,139 @@
+<ion-content class="register-content" [fullscreen]="true">
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <div class="register-wrapper">
+    <!-- TOP BACK BUTTON & BRAND -->
+    <header class="register-header">
+      <button type="button" class="back-link-btn" (click)="goToLogin()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        <span>Volver al Login</span>
+      </button>
+
+      <div class="logo-mini">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+      </div>
+      <h1 class="page-title">Crear Cuenta</h1>
+      <p class="page-subtitle">Únete a TaskFlow Pro y lleva el control de todas tus actividades</p>
+    </header>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <div class="auth-card">
+      @if (errorMessage()) {
+        <div class="error-banner">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form (ngSubmit)="onRegister()" class="auth-form">
+        <!-- Campo: Nombre Completo -->
+        <div class="input-group">
+          <label class="field-label" for="reg-name">Nombre Completo</label>
+          <div class="custom-input-wrapper">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <input
+              id="reg-name"
+              type="text"
+              [ngModel]="name()"
+              (ngModelChange)="name.set($event)"
+              name="name"
+              placeholder="Ej: Andrés Rodríguez"
+              autocomplete="name"
+              required
+              class="native-field"
+            />
+          </div>
+        </div>
+
+        <!-- Campo: Correo Electrónico -->
+        <div class="input-group">
+          <label class="field-label" for="reg-email">Correo Electrónico</label>
+          <div class="custom-input-wrapper">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <input
+              id="reg-email"
+              type="email"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+              name="email"
+              placeholder="tu.correo@ejemplo.com"
+              autocomplete="email"
+              required
+              class="native-field"
+            />
+          </div>
+        </div>
+
+        <!-- Campo: Contraseña -->
+        <div class="input-group">
+          <label class="field-label" for="reg-password">Contraseña (mínimo 6 caracteres)</label>
+          <div class="custom-input-wrapper">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <input
+              id="reg-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              [ngModel]="password()"
+              (ngModelChange)="password.set($event)"
+              name="password"
+              placeholder="Mínimo 6 caracteres"
+              autocomplete="new-password"
+              required
+              class="native-field"
+            />
+            <button
+              type="button"
+              class="eye-toggle-btn"
+              (click)="togglePasswordVisibility()"
+              aria-label="Mostrar u ocultar contraseña"
+            >
+              <ion-icon [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Campo: Confirmar Contraseña -->
+        <div class="input-group">
+          <label class="field-label" for="reg-confirm">Confirmar Contraseña</label>
+          <div class="custom-input-wrapper">
+            <ion-icon name="shield-checkmark-outline" class="input-icon"></ion-icon>
+            <input
+              id="reg-confirm"
+              [type]="showPassword() ? 'text' : 'password'"
+              [ngModel]="confirmPassword()"
+              (ngModelChange)="confirmPassword.set($event)"
+              name="confirmPassword"
+              placeholder="Repite tu contraseña"
+              autocomplete="new-password"
+              required
+              class="native-field"
+            />
+          </div>
+        </div>
+
+        <!-- Botón de Registro -->
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="isLoading() || !name() || !email() || !password() || !confirmPassword()"
+        >
+          @if (isLoading()) {
+            <ion-spinner name="crescent" class="btn-spinner"></ion-spinner>
+            <span>Creando cuenta...</span>
+          } @else {
+            <span>Registrarme y Acceder</span>
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          }
+        </button>
+      </form>
+
+      <!-- FOOTER -->
+      <div class="card-footer">
+        <p>¿Ya tienes una cuenta registrada?</p>
+        <button type="button" class="link-btn" (click)="goToLogin()">
+          Iniciar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-content>

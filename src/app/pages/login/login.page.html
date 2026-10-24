@@ -1,0 +1,141 @@
+<ion-content class="login-content" [fullscreen]="true">
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <div class="login-wrapper">
+    <!-- HERO / LOGO SECTION -->
+    <header class="login-header">
+      <div class="logo-badge">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+      </div>
+      <span class="header-tag">EVALUACIÓN MÓVIL • IPSS</span>
+      <h1 class="app-title">TaskFlow <span>Pro</span></h1>
+      <p class="app-subtitle">Tu gestor inteligente de tareas y productividad personal</p>
+    </header>
+
+    <!-- FORMULARIO DE ACCESO -->
+    <div class="auth-card">
+      <div class="card-header">
+        <h2 class="card-title">Iniciar Sesión</h2>
+        <p class="card-description">Ingresa tus credenciales para acceder a tus tareas</p>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="error-banner">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form (ngSubmit)="onLogin()" class="auth-form">
+        <!-- Campo: Correo Electrónico -->
+        <div class="input-group">
+          <label class="field-label" for="login-email">Correo Electrónico</label>
+          <div class="custom-input-wrapper">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <input
+              id="login-email"
+              type="email"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+              name="email"
+              placeholder="ejemplo@ipss.cl"
+              autocomplete="email"
+              required
+              class="native-field"
+            />
+          </div>
+        </div>
+
+        <!-- Campo: Contraseña -->
+        <div class="input-group">
+          <div class="label-row">
+            <label class="field-label" for="login-password">Contraseña</label>
+          </div>
+          <div class="custom-input-wrapper">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <input
+              id="login-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              [ngModel]="password()"
+              (ngModelChange)="password.set($event)"
+              name="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+              class="native-field"
+            />
+            <button
+              type="button"
+              class="eye-toggle-btn"
+              (click)="togglePasswordVisibility()"
+              aria-label="Mostrar u ocultar contraseña"
+            >
+              <ion-icon [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Botón de Iniciar Sesión -->
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="isLoading() || !email() || !password()"
+        >
+          @if (isLoading()) {
+            <ion-spinner name="crescent" class="btn-spinner"></ion-spinner>
+            <span>Verificando...</span>
+          } @else {
+            <span>Ingresar al Sistema</span>
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          }
+        </button>
+      </form>
+
+      <!-- SECCIÓN ACCESO RÁPIDO EVALUACIÓN -->
+      <div class="demo-divider">
+        <span>O accede con un clic (Evaluadores)</span>
+      </div>
+
+      <div class="quick-access-box">
+        <button
+          type="button"
+          class="demo-chip-btn student-demo"
+          (click)="onQuickDemo('andres')"
+          [disabled]="isLoading()"
+        >
+          <div class="chip-avatar">AR</div>
+          <div class="chip-text">
+            <strong>Andrés Rodríguez</strong>
+            <small>Estudiante IPSS</small>
+          </div>
+          <ion-icon name="flash-outline" class="chip-action-icon"></ion-icon>
+        </button>
+
+        <button
+          type="button"
+          class="demo-chip-btn guest-demo"
+          (click)="onQuickDemo('demo')"
+          [disabled]="isLoading()"
+        >
+          <div class="chip-avatar demo-avatar">
+            <ion-icon name="sparkles-outline"></ion-icon>
+          </div>
+          <div class="chip-text">
+            <strong>Usuario Invitado</strong>
+            <small>demo@taskflow.com</small>
+          </div>
+          <ion-icon name="flash-outline" class="chip-action-icon"></ion-icon>
+        </button>
+      </div>
+
+      <!-- FOOTER: REGISTRO -->
+      <div class="card-footer">
+        <p>¿Aún no tienes una cuenta?</p>
+        <button type="button" class="link-btn" (click)="goToRegister()">
+          Crear una cuenta gratis
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-content>
